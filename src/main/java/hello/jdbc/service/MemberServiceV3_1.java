@@ -8,7 +8,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -23,7 +22,11 @@ public class MemberServiceV3_1 {
     private final MemberRepositoryV3 memberRepository;
 
     public void accountTransfer(String fromId, String toId, int money) throws SQLException {
-//        Connection con = dataSource.getConnection();
+        /*
+         getTransaction(): 새로운 트랜잭션을 시작하거나, 현재 이미 진행 중인 트랜잭션이 있으면 그 트랜잭션을 재사용.
+         TransactionStatus: 트랜잭션의 상태를 관리하는 객체로, 이 객체를 통해 트랜잭션을 커밋하거나 롤백할 수 있음.
+         TransactionDefinition: 트랜잭션의 설정을 정의. 격리/전파 수준, 읽기 전용 여부 등.
+         */
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
             //비즈니스 로직
@@ -51,14 +54,4 @@ public class MemberServiceV3_1 {
         }
     }
 
-    private void release(Connection con) {
-        if (con != null) {
-            try {
-                con.setAutoCommit(true); //커넥션 풀 고려
-                con.close();
-            } catch (Exception e) {
-                log.info("error", e);
-            }
-        }
-    }
 }

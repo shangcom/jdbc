@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 @Slf4j
 public class MemberRepositoryV3 {
 
-    private final DataSource dataSource;
+    private final DataSource dataSource; // 커넥션 생성하는데 사용.
 
     public MemberRepositoryV3(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -133,6 +133,7 @@ public class MemberRepositoryV3 {
         //JdbcUtils.closeConnection(con); // 트랜잭션 동기화와 무관하게 커넥션을 닫거나 반환
 
     }
+
 
     private Connection getConnection() throws SQLException {
         // DataSourceUtils 통해 얻은 커넥션은 트랜잭션 동기화를 지원함.
