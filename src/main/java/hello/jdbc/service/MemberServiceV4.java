@@ -3,6 +3,7 @@ package hello.jdbc.service;
 import hello.jdbc.domain.Member;
 import hello.jdbc.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -21,12 +22,18 @@ public class MemberServiceV4 {
 
     @Transactional
     public void accountTransfer(String fromId, String toId, int money) {
-                bizLogic(fromId, toId, money);
+        bizLogic(fromId, toId, money);
     }
 
     private void bizLogic(String fromId, String toId, int money) {
         Member fromMember = memberRepository.findById(fromId);
         Member toMember = memberRepository.findById(toId);
+
+        try {
+            memberRepository.update(fromId, fromMember.getMoney() - money);
+        } catch (DuplicateKeyException e) {
+            // 복구 코드
+        }
 
         memberRepository.update(fromId, fromMember.getMoney() - money);
         validation(toMember);
